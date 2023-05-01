@@ -27,7 +27,7 @@ To become a part of the TideTreasures program and start earning rewards, follow 
 3. Stake your LP tokens in the TideTreasures smart contract.
 4. Watch your rewards grow over time as you continue to stake your LP tokens.
 
-**Note**: Remember to always do your own research and consider potential risks before participating in any DeFi protocols.
+
 
 ## Conclusion
 
