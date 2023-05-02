@@ -1,13 +1,20 @@
+
 pragma solidity ^0.8.1;
 
-import "@openzeppelin/contracts/token/ERC721/ERC721Holder.sol";
+import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/utils/Counters.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 
-contract TideTreasures is ERC721Holder, ReentrancyGuard {
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
+
+
+
+contract TideTreasures is ERC721Enumerable, ReentrancyGuard {
     IERC20 public dyneDollar;
-    IERC721 public lpToken;
+    ERC721Enumerable public lpToken;
 
     struct Stake {
         uint256 amount;
@@ -20,9 +27,11 @@ contract TideTreasures is ERC721Holder, ReentrancyGuard {
     event Unstaked(address indexed user, uint256 amount, uint256 timestamp);
     event RewardsWithdrawn(address indexed user, uint256 amount);
 
-    constructor(address _dyneDollar, address _lpToken) {
+
+    constructor(address _dyneDollar, address _lpToken) ERC721("TideTreasures", "TT") {
+        // Your constructor code here...
         dyneDollar = IERC20(_dyneDollar);
-        lpToken = IERC721(_lpToken);
+        lpToken = ERC721Enumerable(_lpToken);
     }
 
     function stake(uint256 tokenId) external nonReentrant {
