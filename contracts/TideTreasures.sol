@@ -10,9 +10,12 @@ import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 
+import "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
 
 
-contract TideTreasures is ERC721Enumerable, ReentrancyGuard {
+
+contract TideTreasures is ERC721Enumerable, ReentrancyGuard, IERC721Receiver {
+
     IERC20 public dyneDollar;
     ERC721Enumerable public lpToken;
 
@@ -34,6 +37,10 @@ contract TideTreasures is ERC721Enumerable, ReentrancyGuard {
         lpToken = ERC721Enumerable(_lpToken);
     }
 
+    function onERC721Received(address, address, uint256, bytes calldata) public virtual override returns (bytes4) {
+        return this.onERC721Received.selector;
+    }
+    
     function stake(uint256 tokenId) external nonReentrant {
         lpToken.safeTransferFrom(msg.sender, address(this), tokenId);
         stakes[msg.sender].push(Stake(lpToken.tokenOfOwnerByIndex(address(this), tokenId), block.timestamp));
