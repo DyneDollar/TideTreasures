@@ -40,37 +40,36 @@ contract TideTreasures is ERC721Enumerable, ReentrancyGuard, IERC721Receiver {
     function onERC721Received(address, address, uint256, bytes calldata) public virtual override returns (bytes4) {
         return this.onERC721Received.selector;
     }
-    
-    function stake(uint256 tokenId) external nonReentrant {
-        lpToken.safeTransferFrom(msg.sender, address(this), tokenId);
-        stakes[msg.sender].push(Stake(lpToken.tokenOfOwnerByIndex(address(this), tokenId), block.timestamp));
-        emit Staked(msg.sender, lpToken.tokenOfOwnerByIndex(address(this), tokenId), block.timestamp);
-    }
 
-    function unstake(uint256 tokenId) external nonReentrant {
-        Stake[] storage userStakes = stakes[msg.sender];
-        uint256 tokenIndex;
-        bool found = false;
+function stake(uint256 tokenId) external nonReentrant {
+    lpToken.safeTransferFrom(msg.sender, address(this), tokenId);
+    stakes[msg.sender].push(Stake(tokenId, block.timestamp)); // use tokenId directly
+    emit Staked(msg.sender, tokenId, block.timestamp); // use tokenId directly
+}
 
-        for (uint256 i = 0; i < userStakes.length; i++) {
-            if (userStakes[i].amount == tokenId) {
-                tokenIndex = i;
-                found = true;
-                break;
-            }
+function unstake(uint256 tokenId) external nonReentrant {
+    Stake[] storage userStakes = stakes[msg.sender];
+    uint256 tokenIndex;
+    bool found = false;
+
+    for (uint256 i = 0; i < userStakes.length; i++) {
+        if (userStakes[i].amount == tokenId) {
+            tokenIndex = i;
+            found = true;
+            break;
         }
-
-        require(found, "No such staked token");
-        
-        uint256 tokenAmount = userStakes[tokenIndex].amount;
-
-        lpToken.safeTransferFrom(address(this), msg.sender, tokenId);
-
-        userStakes[tokenIndex] = userStakes[userStakes.length - 1];
-        userStakes.pop();
-
-        emit Unstaked(msg.sender, tokenAmount, block.timestamp);
     }
+
+    require(found, "No such staked token");
+    
+    lpToken.safeTransferFrom(address(this), msg.sender, tokenId); // use tokenId directly
+
+    userStakes[tokenIndex] = userStakes[userStakes.length - 1];
+    userStakes.pop();
+
+    emit Unstaked(msg.sender, tokenId, block.timestamp); // use tokenId directly
+}
+
 
     function withdrawRewards() external nonReentrant {
         Stake[] storage userStakes = stakes[msg.sender];
