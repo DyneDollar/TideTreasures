@@ -86,4 +86,9 @@ function unstake(uint256 tokenId) external nonReentrant {
 
         emit RewardsWithdrawn(msg.sender, totalRewards);
     }
+
+    function getStakes(address user) external view returns (Stake[] memory) {
+        return stakes[user];
+    }
+    
 }
