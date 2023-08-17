@@ -32,7 +32,7 @@ contract TideTreasures is ERC721Enumerable, ReentrancyGuard, IERC721Receiver {
 
 
     constructor(address _dyneDollar, address _lpToken) ERC721("TideTreasures", "TT") {
-        // Your constructor code here...
+
         dyneDollar = IERC20(_dyneDollar);
         lpToken = ERC721Enumerable(_lpToken);
     }
@@ -43,8 +43,8 @@ contract TideTreasures is ERC721Enumerable, ReentrancyGuard, IERC721Receiver {
 
 function stake(uint256 tokenId) external nonReentrant {
     lpToken.safeTransferFrom(msg.sender, address(this), tokenId);
-    stakes[msg.sender].push(Stake(tokenId, block.timestamp)); // use tokenId directly
-    emit Staked(msg.sender, tokenId, block.timestamp); // use tokenId directly
+    stakes[msg.sender].push(Stake(tokenId, block.timestamp));
+    emit Staked(msg.sender, tokenId, block.timestamp); 
 }
 
 function unstake(uint256 tokenId) external nonReentrant {
